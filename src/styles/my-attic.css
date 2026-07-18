@@ -1,0 +1,297 @@
+/* My Attic — quiet, icon-led, human */
+
+.my-attic {
+  position: relative;
+  isolation: isolate;
+  min-height: calc(100svh - var(--header-height) - var(--player-height));
+  width: min(100% - 2rem, 52rem);
+  margin: 0 auto;
+  padding: clamp(1.75rem, 4vw, 2.75rem) 0 clamp(3rem, 6vw, 4rem);
+  color: var(--color-ink);
+}
+
+.my-attic::before {
+  content: "";
+  position: absolute;
+  inset: -2rem -1rem auto;
+  height: 11rem;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 70% 90% at 70% 0%,
+    color-mix(in srgb, var(--color-faded-yellow) 22%, transparent),
+    transparent 70%
+  );
+}
+
+.my-attic__top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.my-attic__title {
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 3.25rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--color-brown-deep);
+}
+
+.my-attic__hello {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-style: italic;
+  color: color-mix(in srgb, var(--color-brown) 75%, transparent);
+}
+
+.my-attic__tools {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.my-attic__icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: block;
+}
+
+.my-attic__icon-btn,
+.my-attic__rail-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 1px solid color-mix(in srgb, var(--color-brown) 22%, transparent);
+  background: color-mix(in srgb, var(--color-cream-flat) 70%, white);
+  color: var(--color-brown-deep);
+  text-decoration: none;
+  transition:
+    background 160ms var(--ease),
+    border-color 160ms var(--ease),
+    transform 160ms var(--ease);
+}
+
+.my-attic__icon-btn:hover,
+.my-attic__rail-item:hover {
+  background: white;
+  border-color: color-mix(in srgb, var(--color-brown) 45%, transparent);
+  color: var(--color-brown-deep);
+}
+
+.my-attic__icon-btn:active,
+.my-attic__rail-item:active {
+  transform: translateY(1px);
+}
+
+.my-attic__tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 0.55rem);
+  transform: translateX(-50%) translateY(4px);
+  padding: 0.35rem 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--color-brown) 25%, transparent);
+  background: #2c2118;
+  color: var(--color-cream-flat);
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 140ms var(--ease), transform 140ms var(--ease);
+  z-index: 5;
+}
+
+.my-attic__tip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #2c2118;
+}
+
+.my-attic__icon-btn:hover .my-attic__tip,
+.my-attic__icon-btn:focus-visible .my-attic__tip,
+.my-attic__rail-item:hover .my-attic__tip,
+.my-attic__rail-item:focus-visible .my-attic__tip,
+.my-attic__void:hover .my-attic__tip,
+.my-attic__void:focus-visible .my-attic__tip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.my-attic__tip--center {
+  bottom: auto;
+  top: calc(100% + 0.65rem);
+}
+
+.my-attic__tip--center::after {
+  top: auto;
+  bottom: 100%;
+  border-top-color: transparent;
+  border-bottom-color: #2c2118;
+}
+
+.my-attic__rail {
+  display: flex;
+  gap: 0.45rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-brown) 16%, transparent);
+}
+
+.my-attic__rail-item[aria-current="page"] {
+  border-color: var(--color-brown-deep);
+  background: var(--color-brown-deep);
+  color: var(--color-cream-flat);
+}
+
+.my-attic__rail-item--soon {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.my-attic__count {
+  position: absolute;
+  right: -0.2rem;
+  top: -0.25rem;
+  min-width: 1.05rem;
+  height: 1.05rem;
+  padding: 0 0.25rem;
+  border-radius: 999px;
+  background: var(--color-terracotta);
+  color: white;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1.05rem;
+  text-align: center;
+}
+
+.my-attic__room {
+  min-height: 12rem;
+}
+
+.my-attic__room--playlists {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed color-mix(in srgb, var(--color-brown) 22%, transparent);
+}
+
+.my-attic__void {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 0.75rem;
+  min-height: 11rem;
+  width: 100%;
+  padding: 2rem 1rem;
+  border: 1px dashed color-mix(in srgb, var(--color-brown) 30%, transparent);
+  background: color-mix(in srgb, var(--color-beige) 45%, transparent);
+  color: var(--color-brown-deep);
+  text-decoration: none;
+  transition: background 160ms var(--ease), border-color 160ms var(--ease);
+}
+
+.my-attic__void:hover {
+  background: color-mix(in srgb, var(--color-beige) 70%, white);
+  border-color: color-mix(in srgb, var(--color-brown) 45%, transparent);
+  color: var(--color-brown-deep);
+}
+
+.my-attic__void--quiet {
+  min-height: 6.5rem;
+  cursor: default;
+}
+
+.my-attic__void-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  opacity: 0.7;
+}
+
+.my-attic__void-shelf {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 5.5rem;
+  height: 2.4rem;
+  border-bottom: 3px solid color-mix(in srgb, var(--color-wood) 75%, #5c3f2a);
+}
+
+.my-attic__void-shelf i {
+  display: block;
+  width: 1.1rem;
+  background: color-mix(in srgb, var(--color-brown) 18%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-brown) 18%, transparent);
+}
+
+.my-attic__void-shelf i:nth-child(1) {
+  height: 1.3rem;
+  transform: rotate(-5deg);
+}
+
+.my-attic__void-shelf i:nth-child(2) {
+  height: 1.7rem;
+  transform: rotate(2deg);
+}
+
+.my-attic__void-shelf i:nth-child(3) {
+  height: 1.15rem;
+  transform: rotate(4deg);
+}
+
+.my-attic__records .record-item__art {
+  box-shadow: 4px 5px 0 color-mix(in srgb, var(--color-wood) 14%, transparent);
+}
+
+.my-attic__playlist-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.my-attic__playlist {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-brown) 14%, transparent);
+  color: var(--color-brown-deep);
+}
+
+.my-attic__playlist h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.my-attic__playlist p {
+  margin: 0.2rem 0 0;
+  font-size: 0.88rem;
+  color: color-mix(in srgb, var(--color-brown) 80%, transparent);
+}
+
+@media (max-width: 560px) {
+  .my-attic__hello {
+    display: none;
+  }
+
+  .my-attic__rail {
+    justify-content: space-between;
+  }
+
+  .my-attic__tip {
+    font-size: 0.68rem;
+  }
+}

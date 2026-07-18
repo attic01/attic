@@ -1,0 +1,221 @@
+/* Artists directory + public artist page */
+
+.artists-page {
+  width: min(100% - 2rem, 58rem);
+  margin: 0 auto;
+  padding: clamp(1.75rem, 4vw, 2.75rem) 0 clamp(3rem, 6vw, 4.5rem);
+}
+
+.artists-page__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.artists-page__title {
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 3.25rem);
+  letter-spacing: -0.03em;
+  color: var(--color-brown-deep);
+}
+
+.artists-page__count {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: color-mix(in srgb, var(--color-brown) 70%, transparent);
+}
+
+.artists-grid {
+  display: grid;
+  gap: 1.35rem 1.1rem;
+  grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+}
+
+.artist-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 200ms var(--ease);
+}
+
+.artist-card:hover {
+  transform: translateY(-3px);
+  color: inherit;
+}
+
+.artist-card__portrait {
+  position: relative;
+  aspect-ratio: 1;
+  margin-bottom: 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--color-brown) 20%, transparent);
+  overflow: hidden;
+  box-shadow: 5px 6px 0 color-mix(in srgb, var(--color-wood) 14%, transparent);
+}
+
+.artist-card__initial {
+  position: absolute;
+  inset: auto 0.7rem 0.55rem auto;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: color-mix(in srgb, white 78%, transparent);
+  text-shadow: 0 1px 0 color-mix(in srgb, black 25%, transparent);
+}
+
+.artist-card__portrait--ember {
+  background:
+    radial-gradient(circle at 30% 25%, #e8b07a 0 18%, transparent 19%),
+    linear-gradient(145deg, #8a3a2a, #3f1f18 55%, #1c1210);
+}
+
+.artist-card__portrait--tide {
+  background:
+    radial-gradient(ellipse at 70% 20%, #d7e8ef 0 16%, transparent 17%),
+    linear-gradient(160deg, #5f8fa8, #1f3f4d 60%, #13262e);
+}
+
+.artist-card__portrait--moss {
+  background:
+    linear-gradient(120deg, transparent 40%, #2f5d3a 40% 42%, transparent 42%),
+    linear-gradient(160deg, #9bb58a, #35553a 55%, #1c2e20);
+}
+
+.artist-card__portrait--dusk {
+  background:
+    radial-gradient(circle at 40% 70%, #c45c2a 0 12%, transparent 13%),
+    linear-gradient(180deg, #6b4a7a, #2a1c34 60%, #140e18);
+}
+
+.artist-card__portrait--clay {
+  background:
+    repeating-linear-gradient(
+      -18deg,
+      color-mix(in srgb, #2c2118 18%, transparent) 0 2px,
+      transparent 2px 8px
+    ),
+    linear-gradient(150deg, #d2b48c, #8a5a32 50%, #4a3220);
+}
+
+.artist-card__portrait--ink {
+  background:
+    radial-gradient(circle at 50% 40%, #e8d5a8 0 10%, transparent 11%),
+    linear-gradient(145deg, #3a322c, #1a1612 60%, #0d0b09);
+}
+
+.artist-card__body {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.artist-card__name {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--color-brown-deep);
+}
+
+.artist-card__genre {
+  margin: 0;
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--color-brown) 78%, transparent);
+}
+
+.artist-card__tag {
+  display: inline-block;
+  margin-top: 0.35rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-terracotta);
+}
+
+/* Public artist page */
+
+.artist-page {
+  width: min(100% - 2rem, 58rem);
+  margin: 0 auto;
+  padding: clamp(1.75rem, 4vw, 2.75rem) 0 clamp(3rem, 6vw, 4.5rem);
+}
+
+.artist-page__hero {
+  display: grid;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.artist-page__portrait {
+  aspect-ratio: 1;
+  max-width: 18rem;
+  border: 1px solid color-mix(in srgb, var(--color-brown) 22%, transparent);
+  box-shadow: 8px 10px 0 color-mix(in srgb, var(--color-wood) 16%, transparent);
+  display: grid;
+  place-items: end end;
+  padding: 1rem;
+}
+
+.artist-page__portrait span {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 8vw, 4.5rem);
+  font-weight: 700;
+  line-height: 1;
+  color: color-mix(in srgb, white 80%, transparent);
+}
+
+.artist-page__name {
+  margin: 0;
+  font-size: clamp(2.2rem, 6vw, 3.4rem);
+  letter-spacing: -0.03em;
+  color: var(--color-brown-deep);
+}
+
+.artist-page__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  align-items: center;
+  margin: 0.55rem 0 0;
+}
+
+.artist-page__genre {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: color-mix(in srgb, var(--color-brown) 85%, transparent);
+}
+
+.artist-page__intro {
+  margin: 1rem 0 0;
+  max-width: 34rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--color-brown) 92%, var(--color-ink));
+}
+
+.artist-page__count {
+  margin: 1rem 0 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-brown) 70%, transparent);
+}
+
+.artist-page__releases-title {
+  margin: 0 0 1rem;
+  font-size: 1.35rem;
+  color: var(--color-brown-deep);
+}
+
+.artist-page__shelf {
+  margin-top: 0.25rem;
+}
+
+@media (min-width: 800px) {
+  .artist-page__hero {
+    grid-template-columns: minmax(12rem, 18rem) 1fr;
+    align-items: end;
+    gap: 2.25rem;
+  }
+}

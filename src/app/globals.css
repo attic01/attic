@@ -1,0 +1,8 @@
+/* Global CSS entry — import all stylesheets from src/styles */
+@import "../styles/app.css";
+@import "../styles/landing.css";
+@import "../styles/auth.css";
+@import "../styles/my-attic.css";
+@import "../styles/artists.css";
+@import "../styles/studio.css";
+@import "../styles/albums.css";
