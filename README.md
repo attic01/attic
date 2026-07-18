@@ -111,7 +111,40 @@ attic/
 
 ## Setup
 
-### 1. Clone & install
+### Supabase libraries (what we installed)
+
+These are the packages Attic uses to talk to Supabase. They are already listed in `package.json`; a normal `npm install` pulls them in.
+
+| Package | Where | Why |
+|---------|-------|-----|
+| [`@supabase/supabase-js`](https://www.npmjs.com/package/@supabase/supabase-js) | dependency | Core Supabase client (Auth, DB, Storage) |
+| [`@supabase/ssr`](https://www.npmjs.com/package/@supabase/ssr) | dependency | Cookie-aware clients for Next.js App Router (browser, server, middleware) |
+| [`pg`](https://www.npmjs.com/package/pg) | devDependency | Node Postgres driver used only by `npm run db:migrate` |
+
+**Install commands (if starting from scratch or adding them alone):**
+
+```bash
+# App dependencies (already in package.json)
+npm install @supabase/supabase-js @supabase/ssr
+
+# Migration helper only (already in package.json as a devDependency)
+npm install -D pg
+```
+
+**Where they are used in code:**
+
+| File | Library API |
+|------|-------------|
+| `src/shared/lib/supabase/client.ts` | `createBrowserClient` from `@supabase/ssr` |
+| `src/shared/lib/supabase/server.ts` | `createServerClient` from `@supabase/ssr` |
+| `src/shared/lib/supabase/middleware.ts` | `createServerClient` from `@supabase/ssr` |
+| `scripts/apply-migration.js` | `pg` (`Client`) |
+
+We did **not** use the Supabase CLI (`npx supabase …`) for day-to-day setup. Schema lives in SQL and is applied via the Dashboard SQL Editor or `npm run db:migrate`.
+
+---
+
+### 1. Clone & install everything
 
 ```bash
 git clone <your-repo-url>
@@ -119,40 +152,78 @@ cd attic
 npm install
 ```
 
-### 2. Environment
+That installs Next.js, React, `@supabase/supabase-js`, `@supabase/ssr`, `pg`, TypeScript, ESLint, etc.
+
+---
+
+### 2. Environment files
 
 ```bash
 cp .env.example .env.local
 ```
 
-Fill in (from Supabase → Project Settings → API):
+Edit `.env.local` (Supabase → **Project Settings → API**):
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-Optional — only if you use the migration script:
+Optional — only needed to run the migration script from the terminal:
 
 ```bash
-# DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@db.YOUR_REF.supabase.co:5432/postgres
+# Direct connection (Dashboard → Project Settings → Database → URI)
+DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@db.YOUR_PROJECT_REF.supabase.co:5432/postgres
+
+# If direct host fails, use the Session pooler URI from the same page instead, e.g.:
+# DATABASE_URL=postgresql://postgres.YOUR_PROJECT_REF:YOUR_PASSWORD@aws-0-REGION.pooler.supabase.com:6543/postgres
 ```
 
 Never commit `.env.local`, Google client secrets, or service-role keys. They are covered by `.gitignore`.
 
-### 3. Supabase project
+---
 
-1. Create a project at [supabase.com](https://supabase.com).
-2. **Authentication → Providers → Google** — enable and add Client ID / Secret.
-3. Add redirect URLs:
-   - Supabase Auth callback: `https://YOUR_REF.supabase.co/auth/v1/callback`
-   - App callback: `http://localhost:3000/auth/callback` (plus production URL later)
-4. Site URL: `http://localhost:3000` for local work.
-5. Apply the schema — either:
-   - Paste `supabase/migrations/001_initial.sql` into the SQL Editor and run it, **or**
-   - `DATABASE_URL="…" npm run db:migrate`
+### 3. Create & configure the Supabase project (Dashboard)
 
-The migration creates tables (profiles, artists, albums, tracks, purchases, playlists, bulletin), RLS policies, and storage buckets:
+These steps are in the [Supabase Dashboard](https://supabase.com/dashboard) (not CLI commands):
+
+1. **New project** at [supabase.com](https://supabase.com) — note the project ref (subdomain of `*.supabase.co`).
+2. **Authentication → URL configuration**
+   - Site URL: `http://localhost:3000`
+   - Redirect URLs: `http://localhost:3000/auth/callback` (add production URLs later)
+3. **Authentication → Providers → Google** — enable
+   - Client ID / Client Secret from Google Cloud OAuth
+   - Google authorized redirect URI must include:  
+     `https://YOUR_PROJECT_REF.supabase.co/auth/v1/callback`
+4. Copy **Project URL** + **anon public** key into `.env.local` (step 2).
+
+---
+
+### 4. Apply the database schema
+
+Schema file: `supabase/migrations/001_initial.sql`  
+Creates: `profiles`, `artists`, `albums`, `tracks`, `purchases`, `playlists`, `playlist_tracks`, `bulletin_posts`, plus RLS, auth trigger, and storage buckets.
+
+**Option A — Dashboard (simplest)**
+
+1. Open SQL Editor for your project  
+2. Paste contents of `supabase/migrations/001_initial.sql`  
+3. Run  
+
+**Option B — terminal (uses `pg` + our script)**
+
+```bash
+# Install pg if somehow missing
+npm install -D pg
+
+# Apply migration (password from Dashboard → Database)
+DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@db.YOUR_PROJECT_REF.supabase.co:5432/postgres" \
+  npm run db:migrate
+```
+
+That runs: `node scripts/apply-migration.js` and prints the public tables when done.
+
+**Storage buckets created by the migration:**
 
 | Bucket | Visibility |
 |--------|------------|
@@ -161,7 +232,20 @@ The migration creates tables (profiles, artists, albums, tracks, purchases, play
 | `audio-previews` | Public |
 | `audio-masters` | Private (owners / buyers) |
 
-### 4. Run the app
+**Optional — verify tables via REST (anon key):**
+
+```bash
+curl -sS \
+  -H "apikey: YOUR_ANON_KEY" \
+  -H "Authorization: Bearer YOUR_ANON_KEY" \
+  "https://YOUR_PROJECT_REF.supabase.co/rest/v1/profiles?select=id&limit=1"
+```
+
+Empty array `[]` or HTTP 200 means the table exists. HTTP 404 / “relation does not exist” means the migration has not been applied yet.
+
+---
+
+### 5. Run the app
 
 ```bash
 npm run dev
@@ -171,15 +255,46 @@ Open [http://localhost:3000](http://localhost:3000).
 
 **Without** Supabase env vars, the UI still loads using sample data in `src/shared/data/sample.ts` — useful for layout and listener flows (artists, albums, tracks).
 
+---
+
+### Full command checklist (copy-paste)
+
+```bash
+# 1) Project deps (includes Supabase libraries)
+git clone <your-repo-url>
+cd attic
+npm install
+
+# Same libraries, if you ever need to add them explicitly:
+# npm install @supabase/supabase-js @supabase/ssr
+# npm install -D pg
+
+# 2) Env
+cp .env.example .env.local
+# → fill NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+# 3) Schema (after creating the Supabase project + Google provider in the Dashboard)
+DATABASE_URL="postgresql://postgres:YOUR_PASSWORD@db.YOUR_PROJECT_REF.supabase.co:5432/postgres" \
+  npm run db:migrate
+
+# 4) Dev server
+npm run dev
+```
+
+---
+
 ### Useful scripts
 
 | Command | Purpose |
 |---------|---------|
+| `npm install` | Install all deps including `@supabase/*` and `pg` |
+| `npm install @supabase/supabase-js @supabase/ssr` | Add Supabase client libs only |
+| `npm install -D pg` | Add Postgres driver for migrations only |
+| `npm run db:migrate` | Apply `001_initial.sql` via `DATABASE_URL` (`pg`) |
 | `npm run dev` | Local dev (Turbopack) |
 | `npm run build` | Production build |
 | `npm run start` | Serve production build |
 | `npm run lint` | ESLint |
-| `npm run db:migrate` | Apply `001_initial.sql` via `DATABASE_URL` |
 
 ---
 
